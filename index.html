@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Chart</title>
+  </head>
+  <body>
+    <div id="app" class="l-layout w-full">
+      <h1 class="weather-title mb-20 text-sm">Search by City</h1>
+      <div class="container mx-auto">
+        <section class="c-input flex gap-x-4">
+          <input
+            type="text"
+            id="location-field"
+            placeholder="Search Location"
+            class="block grow-2 py-4 px-5 text-lg text-gray-900 bg-white rounded-xl shadow-sm border border-gray-200 focus:border-blue-600 focus:ring focus:ring-blue-100 focus:outline-none dark:bg-gray-800 dark:text-white dark:border-gray-700"
+          />
+          <button
+            type="submit"
+            id="submit-button"
+            class="bg-blue-700 hover:bg-blue-600"
+          >
+            Add Location
+          </button>
+        </section>
+
+        <section class="c-chart">
+          <canvas id="myChart"></canvas>
+        </section>
+
+        <section class="c-weather-info">
+          <h2>Weather Info Goes Here</h2>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script type="module" src="/src/main.js" defer></script>
+  </body>
+</html>
