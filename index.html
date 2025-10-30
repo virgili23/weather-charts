@@ -13,7 +13,8 @@
         font-family: 'Inter', sans-serif;
       }
       .s-weather-info__button {
-        background-color: #333;
+        background: linear-gradient(25deg, #023341 0%, #034456 100%);
+        border-radius: 10px;
         color: #fff;
         cursor: pointer;
         padding: 10px 15px;
@@ -21,21 +22,30 @@
         text-align: left;
         border: none;
         outline: none;
-        transition: 0.4s;
+        transition: 0.4s all linear;
       }
 
       /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-      .active, .s-weather-info__button:hover {
-        background-color: #0f4f0b;
+      .s-weather-info__button:hover {
+        /* background: linear-gradient(25deg, #023341 120%, #034456 100%); */
+      }
+      .s-weather-info__button.active {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
       }
 
       /* Style the accordion panel. Note: hidden by default */
       .s-weather-info__content {
-        padding: 0 18px;
+        display: none;
+        padding: 20px 18px 18px;
         background-color: #333;
         color: #fff;
-        display: none;
         overflow: hidden;
+        position: relative;
+        top: -20px;
+        z-index: -1;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
       }
 
       .s-weather-info {
