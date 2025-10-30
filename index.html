@@ -1,10 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="/vite.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Chart</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <style>
+      * {
+        font-family: 'Inter', sans-serif;
+      }
+      .s-weather-info__button {
+        background-color: #333;
+        color: #fff;
+        cursor: pointer;
+        padding: 10px 15px;
+        width: 100%;
+        text-align: left;
+        border: none;
+        outline: none;
+        transition: 0.4s;
+      }
+
+      /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+      .active, .s-weather-info__button:hover {
+        background-color: #0f4f0b;
+      }
+
+      /* Style the accordion panel. Note: hidden by default */
+      .s-weather-info__content {
+        padding: 0 18px;
+        background-color: #333;
+        color: #fff;
+        display: none;
+        overflow: hidden;
+      }
+
+      .s-weather-info {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .s-weather-info__card {
+        width: 100%;
+      }
+      .s-weather-info__temp {
+        margin: 0 0 10px;
+        font-size: 2.5rem;
+      }
+      .s-weather-info__time {
+        font-size: 1rem;
+        margin: 0 0 10px;
+      }
+      .s-weather-info__status {
+        text-transform: capitalize;
+        font-style: italic;
+        margin: 0 0 5px;
+      }
+    </style>
   </head>
   <body>
     <div id="app" class="l-layout w-full">
@@ -16,27 +71,23 @@
             id="location-field"
             placeholder="Search Location"
             class="block grow-2 py-4 px-5 text-lg text-gray-900 bg-white rounded-xl shadow-sm border border-gray-200 focus:border-blue-600 focus:ring focus:ring-blue-100 focus:outline-none dark:bg-gray-800 dark:text-white dark:border-gray-700"
-          />
-          <button
-            type="submit"
-            id="submit-button"
-            class="bg-blue-700 hover:bg-blue-600"
           >
+          <button type="submit" id="submit-button" class="bg-blue-700 hover:bg-blue-600">
             Add Location
           </button>
         </section>
-
         <section class="c-chart">
           <canvas id="myChart"></canvas>
         </section>
-
         <section class="c-weather-info">
-          <h2>Weather Info Goes Here</h2>
+          <!-- <h2>Weather Info Goes Here</h2> -->
+          <br>
+          <div class="s-weather-info"></div>
         </section>
       </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-    <script type="module" src="/src/main.js" defer></script>
+    <!-- <script type="module" src="/src/main.js" defer></script> -->
+    <script type="module" src="./src/main.js" defer></script>
   </body>
 </html>

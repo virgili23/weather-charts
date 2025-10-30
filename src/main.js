@@ -1,4 +1,4 @@
-import "./style.css";
+// import "./style.css";
 
 const apiKey = "c6401364e893ef48f3920bad850cadd0";
 let processedData = [];
@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function getData(location) {
     try {
+      processedData = [];
       const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=5&appid=${apiKey}`;
 
       const geoResponse = await fetch(geoUrl);
@@ -32,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
         state: geoState,
       } = geoData[0];
 
-      weatherTitleField.textContent = `Weather Forecasts for ${geoName}, ${geoState}`;
+      weatherTitleField.textContent = `Weather Forecast for ${geoName}, ${geoState}`;
 
       // weather section
 
@@ -46,31 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const weatherData = await weatherRes.json();
 
-      // console.log(`Weather Data: ${weatherData}`);
-
-      // processing weather data from the results
-      // const processedWeatherData = (index) => {
-      //   const dt = weatherData.list[index].dt;
-      //   const localTime = new Date(dt * 1000);
-
-      //   const weatherTemp = weatherData.list[index].main.temp;
-      //   const weatherHumidity = weatherData.list[index].main.humidity;
-      //   const weatherStatus = weatherData.list[index].weather[0].description;
-
-      //   const timeString = localTime.toLocaleString("en-US", {
-      //     weekday: "short",
-      //     hour: "2-digit",
-      //     minute: "2-digit",
-      //     hour12: true,
-      //   });
-
-      //   return `
-      //     Temp: ${weatherTemp}
-      //     Humidity: ${weatherHumidity}
-      //     Status: ${weatherStatus}
-      //     Time: ${timeString}
-      //     `;
-      // };
 
       console.log(`Weather URL for ${geoName}, ${geoState}: ${weatherUrl}`);
 
@@ -79,11 +55,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const dt = weatherData.list[i].dt;
         const localTime = new Date(dt * 1000);
 
-        const weatherTemp = Math.round(
-          weatherData.list[i].main.temp * (9 / 5) - 459.67
-        );
+        let toFarenheight = (temp) => {
+          return Math.round(temp * (9 / 5) - 459.67);
+        }
+
+        const weatherTemp = toFarenheight(weatherData.list[i].main.temp);
+        const weatherTempMin = toFarenheight(weatherData.list[i].main.temp_min);
+        const weatherTempMax = toFarenheight(weatherData.list[i].main.temp_max);
+
         const weatherHumidity = weatherData.list[i].main.humidity;
         const weatherStatus = weatherData.list[i].weather[0].description;
+        const weatherIcon = weatherData.list[i].weather[0].icon;
 
         const weatherTime = localTime.toLocaleString("en-US", {
           weekday: "short",
@@ -92,11 +74,27 @@ document.addEventListener("DOMContentLoaded", () => {
           hour12: true,
         });
 
+
+        // const weatherRainChance = weatherData.list[i].pop;
+
+        const weatherPressure = ((weatherData.list[i].main.pressure) * 0.02953).toFixed(2);
+        const weatherWind = Math.round((weatherData.list[i].wind.speed) * 2.237);
+        const weatherVisibility = Math.round((weatherData.list[i].visibility) * 0.000621371);
+        const weatherClouds = weatherData.list[i].clouds.all;
+
+
         processedData.push({
           weatherTemp,
+          weatherTempMin,
+          weatherTempMax,
           weatherHumidity,
           weatherStatus,
+          weatherIcon,
           weatherTime,
+          weatherPressure,
+          weatherWind,
+          weatherVisibility,
+          weatherClouds
         });
       }
 
@@ -105,7 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
         JSON.stringify(processedData[0], null, 2)
       );
 
-      // console.log(JSON.stringify(processedData, null, 2));
 
       // What to do with that data:
 
@@ -118,8 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
           processedHours.push(processedData[i].weatherTime);
           processedTemps.push(processedData[i].weatherTemp);
         }
-
-        // console.log(processedHours);
 
         if (myChart) {
           myChart.destroy();
@@ -136,8 +131,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 // data: [12, 19, 3, 5],
                 data: processedTemps,
                 borderWidth: 1,
-                backgroundColor: "rgba(75, 192, 192, 0.5)",
-                borderColor: "rgb(75, 192, 192)",
+                backgroundColor: "rgba(57, 171, 82, 0.5)",
+                borderColor: "rgba(57, 171, 82, 0.5)",
               },
             ],
           },
@@ -151,23 +146,58 @@ document.addEventListener("DOMContentLoaded", () => {
           },
         });
       };
-
+      // Generating passed number of iterations
       chartGenerate(8);
 
       const cardGenerate = (iterations) => {
-        const infoContainer = document.querySelector(".c-weather-info");
+        const infoContainer = document.querySelector(".s-weather-info");
+        if (!infoContainer) return;
+        infoContainer.innerHTML = '';
 
-        const weatherCard = `
-        <button class="accordion">Section 1</button>
-        <div class="panel">
-          <p>Lorem ipsum...</p>
-        </div>
-        `;
+        for (let i = 0; i < iterations; i++) {
 
-        infoContainer.innerHTML += weatherCard;
+          const weatherCard = `
+            <div class="s-weather-info__card">
+              <button class="s-weather-info__button">
+              <h2 class="s-weather-info__temp">
+                <span>${processedData[i].weatherTemp}&deg;</span>
+                <img src="https://openweathermap.org/img/wn/${processedData[i].weatherIcon}@2x.png" alt="icon" width="49px" height="49px"/>
+              </h2>
+              <p class="s-weather-info__time">${processedData[i].weatherTime}</p>
+              <p class="s-weather-info__status">${processedData[i].weatherStatus}</p>
+              </button>
+              <div class="s-weather-info__content">
+                <p>Humidity: ${processedData[i].weatherHumidity}%</p>
+                <p>High/Low: ${processedData[i].weatherTempMax}&deg;/${processedData[i].weatherTempMin}&deg;</p>
+                <p>Pressure: ${processedData[i].weatherPressure} in</p>
+                <p>Visibility: ${processedData[i].weatherVisibility} mi</p>
+                <p>Wind: ${processedData[i].weatherWind} mph</p>
+                </div>
+            </div>
+            `;
+
+          infoContainer.innerHTML += weatherCard;
+        }
+
       };
+      // with iterations while i decide how many to pass
+      cardGenerate(5);
 
-      cardGenerate();
+
+      // Accordions
+      const accordions = document.querySelectorAll('.s-weather-info__button');
+      accordions.forEach((accordion) => {
+        accordion.addEventListener('click', function () {
+          this.classList.toggle('active');
+          let panel = this.nextElementSibling;
+          if (panel.style.display === "block") {
+            panel.style.display = "none";
+          } else {
+            panel.style.display = "block";
+          }
+        })
+      })
+
     } catch (error) {
       console.error(error.message);
     }
@@ -183,6 +213,8 @@ document.addEventListener("DOMContentLoaded", () => {
       inputField.value = "";
     }
   };
+
+
 
   addBtn.addEventListener("click", searchWeather);
   inputField.addEventListener("keydown", (event) => {
