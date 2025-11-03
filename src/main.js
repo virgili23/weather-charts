@@ -1,8 +1,11 @@
 // import "./style.css";
 
+
+// converting for loops into foreach
+//
+
+
 const apiKey = "c6401364e893ef48f3920bad850cadd0";
-let processedData = [];
-let myChart;
 const iterations = 8;
 const ctx = document.getElementById("myChart");
 
@@ -10,8 +13,13 @@ const inputField = document.querySelector("#location-field");
 const addBtn = document.querySelector("#submit-button");
 const weatherTitleField = document.querySelector(".weather-title");
 
+let processedData = [];
+let myChart;
 
 let processData = (data) => {
+  processedData = [];
+  localStorage.clear();
+
   // fill the processed data array with all weather data
   for (let i = 0; i < data.list.length; i++) {
     const dt = data.list[i].dt;
@@ -58,6 +66,7 @@ let processData = (data) => {
     });
   }
 
+  localStorage.setItem("weather", JSON.stringify(processedData));
 }
 
 let chartGenerate = (iterations = 3) => {
@@ -130,40 +139,53 @@ let chartGenerate = (iterations = 3) => {
 
 let cardGenerate = (iterations = 3) => {
   const infoContainer = document.querySelector(".s-weather-info");
+  let weather = JSON.parse(localStorage.getItem("weather"));
+
   if (!infoContainer) return;
   infoContainer.innerHTML = '';
 
-  for (let i = 0; i < iterations; i++) {
+  if (!!weather) {
+    console.log('not empty');
 
-    const weatherCard = `
-          <div class="s-weather-info__card">
-            <button class="s-weather-info__button">
-            <h2 class="s-weather-info__temp">
-              <span>${processedData[i].weatherTemp}&deg;</span>
-              <img src="https://openweathermap.org/img/wn/${processedData[i].weatherIcon}@2x.png" alt="icon" width="49px" height="49px"/>
-            </h2>
-            <p class="s-weather-info__time">${processedData[i].weatherTime}</p>
-            <p class="s-weather-info__status">${processedData[i].weatherStatus}</p>
-            </button>
-            <div class="s-weather-info__content">
-              <p>Humidity: ${processedData[i].weatherHumidity}%</p>
-              <p>High/Low: ${processedData[i].weatherTempMax}&deg;/${processedData[i].weatherTempMin}&deg;</p>
-              <p>Pressure: ${processedData[i].weatherPressure} in</p>
-              <p>Visibility: ${processedData[i].weatherVisibility} mi</p>
-              <p>Wind: ${processedData[i].weatherWind} mph</p>
-              <p>Cloud Cover: ${processedData[i].weatherClouds}%</p>
-              </div>
+
+    for (let i = 0; i < iterations; i++) {
+
+      // console.log(weather[i]);
+      // !weather
+
+
+      const weatherCard = `
+      <div class="s-weather-info__card">
+        <button class="s-weather-info__button">
+        <h2 class="s-weather-info__temp">
+          <span>${weather[i].weatherTemp}&deg;</span>
+          <img src="https://openweathermap.org/img/wn/${weather[i].weatherIcon}@2x.png" alt="icon" width="49px" height="49px"/>
+        </h2>
+        <p class="s-weather-info__time">${weather[i].weatherTime}</p>
+        <p class="s-weather-info__status">${weather[i].weatherStatus}</p>
+        </button>
+        <div class="s-weather-info__content">
+          <p>Humidity: ${weather[i].weatherHumidity}%</p>
+          <p>High/Low: ${weather[i].weatherTempMax}&deg;/${weather[i].weatherTempMin}&deg;</p>
+          <p>Pressure: ${weather[i].weatherPressure} in</p>
+          <p>Visibility: ${weather[i].weatherVisibility} mi</p>
+          <p>Wind: ${weather[i].weatherWind} mph</p>
+          <p>Cloud Cover: ${weather[i].weatherClouds}%</p>
           </div>
-          `;
+      </div>
+      `;
 
-    infoContainer.innerHTML += weatherCard;
+      infoContainer.innerHTML += weatherCard;
+
+      // click events here
+    }
   }
-
 };
+
+cardGenerate(iterations);
 
 async function getData(location) {
   try {
-    processedData = [];
     const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=5&appid=${apiKey}`;
 
     const geoResponse = await fetch(geoUrl);
@@ -182,7 +204,7 @@ async function getData(location) {
       country: geoCountry,
     } = geoData[0];
 
-    console.log(geoData[0]);
+    // console.log(geoData[0]);
 
     weatherTitleField.textContent = `Weather Forecast for ${geoName}, ${geoState}, ${geoCountry}`;
 
@@ -201,26 +223,10 @@ async function getData(location) {
 
     processData(weatherData);
 
-    // localStorage.setItem('data', processedData);
     // console.log(processedData);
 
     chartGenerate(iterations);
     cardGenerate(iterations);
-
-
-    // Accordions
-    const accordions = document.querySelectorAll('.s-weather-info__button');
-    accordions.forEach((accordion) => {
-      accordion.addEventListener('click', function () {
-        this.classList.toggle('active');
-        let panel = this.nextElementSibling;
-        if (panel.style.display === "block") {
-          panel.style.display = "none";
-        } else {
-          panel.style.display = "block";
-        }
-      })
-    })
 
   } catch (error) {
     console.error(error.message);
@@ -255,4 +261,17 @@ inputField.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     searchWeather();
   }
+});
+
+
+
+
+// Accordions
+document.querySelector(".s-weather-info").addEventListener("click", (e) => {
+  const button = e.target.closest(".s-weather-info__button");
+  if (!button) return;
+
+  button.classList.toggle("active");
+  const panel = button.nextElementSibling;
+  panel.style.display = panel.style.display === "block" ? "none" : "block";
 });
