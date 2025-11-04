@@ -2,10 +2,6 @@ let processedData = [];
 
 let processData = (fullData) => {
     processedData = [];
-    localStorage.clear();
-
-    // fill the processed data array with all weather data
-
     const dataList = fullData.list;
 
     dataList.forEach(item => {

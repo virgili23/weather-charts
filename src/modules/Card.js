@@ -9,7 +9,6 @@ let cardGenerate = (iterations = 3) => {
 
         for (let i = 0; i < iterations; i++) {
             // console.log(weather[i]);
-            // !weather
 
             const weatherCard = `
             <div class="s-weather-info__card">

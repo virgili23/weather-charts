@@ -1,28 +1,28 @@
 import "./style.css";
 
+import { titleGenerate } from "./modules/Title";
 import { cardGenerate } from "./modules/Card";
 import { chartGenerate } from "./modules/Chart";
 import { processData } from "./modules/DataHandler";
-
 
 const apiKey = "c6401364e893ef48f3920bad850cadd0";
 const iterations = 8;
 const inputField = document.querySelector("#location-field");
 const addBtn = document.querySelector("#submit-button");
-const weatherTitleField = document.querySelector(".weather-title");
-
 
 // Initial load
+titleGenerate();
 cardGenerate(iterations);
 chartGenerate(iterations);
-
 
 // Fetch Info
 async function getData(location) {
   try {
-    const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=5&appid=${apiKey}`;
+    let locationInfo = [];
 
+    const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=5&appid=${apiKey}`;
     const geoResponse = await fetch(geoUrl);
+
     if (!geoResponse.ok) {
       throw new Error(`Response status: ${geoResponse.status}`);
     }
@@ -38,12 +38,19 @@ async function getData(location) {
       country: geoCountry,
     } = geoData[0];
 
+    console.log(geoData);
 
-    if (geoCountry != 'US') {
-      weatherTitleField.textContent = `Weather Forecast for ${geoName}, ${geoCountry}`;
-    } else {
-      weatherTitleField.textContent = `Weather Forecast for ${geoName}, ${geoState}, ${geoCountry}`;
-    }
+    locationInfo.push({
+      geoName,
+      geoState,
+      geoCountry,
+      geoLat,
+      geoLon
+    })
+
+    localStorage.setItem("location", JSON.stringify(locationInfo));
+
+    titleGenerate();
 
     // weather section
     const weatherUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${geoLat}&lon=${geoLon}&appid=${apiKey}`;
@@ -61,21 +68,10 @@ async function getData(location) {
     cardGenerate(iterations);
 
   } catch (error) {
-    console.error(error.message);
     console.log(`Error message`);
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        console.log("Latitude:", position.coords.latitude);
-        console.log("Longitude:", position.coords.longitude);
-      },
-      (error) => {
-        console.error("Geolocation error:", error.message);
-      }
-    );
+    console.error(error.message);
   }
 }
-
 
 // searchign weather handlers
 let searchWeather = () => {
