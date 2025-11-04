@@ -13,7 +13,6 @@
         font-family: 'Inter', sans-serif;
       }
       .s-weather-info__button {
-        /* background: linear-gradient(25deg, #023341 0%, #034456 100%); */
         background-position: center;
         background-size:cover;
         border-radius: 10px;
@@ -97,7 +96,47 @@
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-    <!-- <script type="module" src="/src/main.js" defer></script> -->
     <script type="module" src="./src/main.js" defer></script>
   </body>
 </html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="/vite.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Chart</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <style></style>
+  </head>
+  <body>
+    <div id="app" class="l-layout w-full">
+      <h1 class="text-4xl text-red-500 font-bold">Tailwind is working!</h1>
+      <h1 class="weather-title mb-10 text-sm fs-20"></h1>
+      <div class="container mx-auto">
+        <section class="c-input flex gap-x-4">
+          <input
+            type="text"
+            id="location-field"
+            placeholder="Search Location"
+            class="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+          <button type="submit" id="submit-button" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            Search
+          </button>
+        </section>
+        <section class="c-chart my-4">
+          <canvas id="myChart"></canvas>
+        </section>
+        <section class="c-weather-info">
+          <br>
+          <div class="s-weather-info"></div>
+        </section>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script type="module" src="./src/main.js" defer></script>
+  </body>
+</html> -->

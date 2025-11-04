@@ -1,5 +1,15 @@
 import "./style.css";
 
+
+// Next Items:
+// integrate timezone comparissons relative to where we are searching from.
+// interactive weather map with leaflet and openweathermap "tile layer"
+
+// For Fun:
+// Learn more Tailwind and add those styles
+// Revamp the design to one from dribbbl and use liquid glass effects
+// Add more icons to weather statuses
+
 import { titleGenerate } from "./modules/Title";
 import { cardGenerate } from "./modules/Card";
 import { chartGenerate } from "./modules/Chart";
@@ -27,7 +37,7 @@ async function getData(location) {
       throw new Error(`Response status: ${geoResponse.status}`);
     }
 
-    // geo section
+    // Geo Section
     const geoData = await geoResponse.json();
 
     const {
@@ -38,7 +48,7 @@ async function getData(location) {
       country: geoCountry,
     } = geoData[0];
 
-    console.log(geoData);
+    // console.log(geoData);
 
     locationInfo.push({
       geoName,
@@ -52,7 +62,8 @@ async function getData(location) {
 
     titleGenerate();
 
-    // weather section
+
+    // Weather Section
     const weatherUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${geoLat}&lon=${geoLon}&appid=${apiKey}`;
 
     const weatherRes = await fetch(weatherUrl);
@@ -63,7 +74,7 @@ async function getData(location) {
 
     const weatherData = await weatherRes.json();
 
-    processData(weatherData);
+    processData(weatherData, geoData[0]);
     chartGenerate(iterations);
     cardGenerate(iterations);
 

@@ -37,6 +37,7 @@ let chartGenerate = (iterations = 3) => {
                         borderWidth: 3,
                         backgroundColor: "rgba(214, 150, 23, 1)",
                         borderColor: "rgba(214, 150, 23, .85)",
+                        tension: 0.4
                     },
                 ],
             },

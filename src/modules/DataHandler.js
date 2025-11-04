@@ -1,10 +1,20 @@
 let processedData = [];
 
-let processData = (fullData) => {
+let processData = (fullWeatherData, fullGeoData) => {
     processedData = [];
-    const dataList = fullData.list;
+    const weatherDataList = fullWeatherData.list;
 
-    dataList.forEach(item => {
+    console.log(fullGeoData);
+
+    const geoUrl = `http://api.geonames.org/timezoneJSON?lat=${fullGeoData.lat}&lng=${fullGeoData.lon}&username=demo`;
+
+
+    console.log(geoUrl);
+
+
+
+
+    weatherDataList.forEach(item => {
         const dt = item.dt;
         const localTime = new Date(dt * 1000);
 
