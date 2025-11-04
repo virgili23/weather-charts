@@ -12,6 +12,14 @@
       * {
         font-family: 'Inter', sans-serif;
       }
+      .glass {
+          background: rgba(255, 255, 255, 0.2); /* semi-transparent */
+  backdrop-filter: blur(10px);          /* blur content behind */
+  -webkit-backdrop-filter: blur(10px);  /* Safari support */
+  border-radius: 16px;                   /* rounded corners */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      }
       .s-weather-info__button {
         background-position: center;
         background-size:cover;
@@ -74,6 +82,7 @@
   <body>
     <div id="app" class="l-layout w-full">
       <h1 class="weather-title mb-10 text-sm fz-20"></h1>
+      <div class="glass" style="width: 50px;height:50px;">50 F</div>
       <div class="container mx-auto">
         <section class="c-input flex gap-x-4">
           <input
