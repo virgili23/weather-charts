@@ -23,21 +23,20 @@
         border: none;
         outline: none;
         transition: 0.4s all linear;
+        text-shadow: 1px 1px 10px black;
       }
 
-      /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-      .s-weather-info__button:hover {
-        /* background: linear-gradient(25deg, #023341 120%, #034456 100%); */
+      .s-weather-info__button:focus {
+        outline: unset;
       }
       .s-weather-info__button.active {
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
       }
 
-      /* Style the accordion panel. Note: hidden by default */
       .s-weather-info__content {
         display: none;
-        padding: 20px 18px 18px;
+        padding: 40px 18px 18px;
         background-color: #333;
         color: #fff;
         overflow: hidden;
@@ -46,6 +45,7 @@
         z-index: -1;
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
+        text-align: left;
       }
 
       .s-weather-info {
@@ -57,6 +57,8 @@
         width: 100%;
       }
       .s-weather-info__temp {
+        display: flex;
+        align-items: center;
         margin: 0 0 10px;
         font-size: 2.5rem;
       }
@@ -90,7 +92,6 @@
           <canvas id="myChart"></canvas>
         </section>
         <section class="c-weather-info">
-          <!-- <h2>Weather Info Goes Here</h2> -->
           <br>
           <div class="s-weather-info"></div>
         </section>

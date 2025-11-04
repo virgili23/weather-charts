@@ -1,4 +1,4 @@
-// import "./style.css";
+import "./style.css";
 
 
 // converting for loops into foreach
@@ -16,26 +16,29 @@ const weatherTitleField = document.querySelector(".weather-title");
 let processedData = [];
 let myChart;
 
-let processData = (data) => {
+let processData = (fullData) => {
   processedData = [];
   localStorage.clear();
 
   // fill the processed data array with all weather data
-  for (let i = 0; i < data.list.length; i++) {
-    const dt = data.list[i].dt;
+
+  const dataList = fullData.list;
+
+  dataList.forEach(item => {
+    const dt = item.dt;
     const localTime = new Date(dt * 1000);
 
     let toFarenheight = (temp) => {
       return Math.round(temp * (9 / 5) - 459.67);
     }
 
-    const weatherTemp = toFarenheight(data.list[i].main.temp);
-    const weatherTempMin = toFarenheight(data.list[i].main.temp_min);
-    const weatherTempMax = toFarenheight(data.list[i].main.temp_max);
+    const weatherTemp = toFarenheight(item.main.temp);
+    const weatherTempMin = toFarenheight(item.main.temp_min);
+    const weatherTempMax = toFarenheight(item.main.temp_max);
 
-    const weatherHumidity = data.list[i].main.humidity;
-    const weatherStatus = data.list[i].weather[0].description;
-    const weatherIcon = data.list[i].weather[0].icon;
+    const weatherHumidity = item.main.humidity;
+    const weatherStatus = item.weather[0].description;
+    const weatherIcon = item.weather[0].icon;
 
     const weatherTime = localTime.toLocaleString("en-US", {
       weekday: "short",
@@ -44,12 +47,50 @@ let processData = (data) => {
       hour12: true,
     });
 
-    const weatherPressure = ((data.list[i].main.pressure) * 0.02953).toFixed(2);
-    const weatherWind = Math.round((data.list[i].wind.speed) * 2.237);
-    const weatherVisibility = ((data.list[i].visibility) * 0.000621371).toFixed(1);
-    const weatherClouds = data.list[i].clouds.all;
+    const weatherPressure = ((item.main.pressure) * 0.02953).toFixed(2);
+    const weatherWind = Math.round((item.wind.speed) * 2.237);
+    const weatherVisibility = ((item.visibility) * 0.000621371).toFixed(1);
+    const weatherClouds = item.clouds.all;
 
-    // const weatherRainChance = data.list[i].pop;
+    // For the wallpapers
+    let weatherBackground;
+
+    switch (weatherIcon) {
+      case '01d':
+        weatherBackground = '/assets/wallpapers/clear-sky-day.jpg';
+        break;
+      case '01n':
+        weatherBackground = '/assets/wallpapers/clear-sky-night.jpeg';
+        break;
+      case '02d':
+        weatherBackground = '/assets/wallpapers/few-clouds-day.jpg';
+        break;
+      case '02n':
+        weatherBackground = '/assets/wallpapers/few-clouds-night.jpg';
+        break;
+      case '03d':
+        weatherBackground = '/assets/wallpapers/few-clouds-day.jpg';
+        break;
+      case '03n':
+        weatherBackground = '/assets/wallpapers/few-clouds-night.jpg';
+        break;
+      case '04d':
+        weatherBackground = '/assets/wallpapers/few-clouds-day.jpg';
+        break;
+      case '04n':
+        weatherBackground = '/assets/wallpapers/few-clouds-night.jpg';
+        break;
+      case '10d':
+        weatherBackground = '/assets/wallpapers/raining-day.jpeg';
+        break;
+      case '10n':
+        weatherBackground = '/assets/wallpapers/raining-day.jpeg';
+        break;
+      default:
+        weatherBackground = '';
+    }
+
+    // const weatherRainChance = item.pop;
 
     processedData.push({
       weatherTemp,
@@ -58,83 +99,92 @@ let processData = (data) => {
       weatherHumidity,
       weatherStatus,
       weatherIcon,
+      weatherBackground,
       weatherTime,
       weatherPressure,
       weatherWind,
       weatherVisibility,
       weatherClouds
     });
-  }
+
+  });
+
+  // console.log(processedData);
 
   localStorage.setItem("weather", JSON.stringify(processedData));
 }
 
 let chartGenerate = (iterations = 3) => {
 
+  let weather = JSON.parse(localStorage.getItem("weather"));
+
   let processedInfo = [];
 
-  for (let i = 0; i < iterations; i++) {
-    processedInfo.push({
-      x: processedData[i].weatherTime,
-      y: processedData[i].weatherTemp,
-      humidity: processedData[i].weatherHumidity,
-      wind: processedData[i].weatherWind,
-      pressure: processedData[i].weatherPressure
-    });
-  }
+  if (!!weather) {
+    for (let i = 0; i < iterations; i++) {
+      processedInfo.push({
+        x: weather[i].weatherTime,
+        y: weather[i].weatherTemp,
+        humidity: weather[i].weatherHumidity,
+        wind: weather[i].weatherWind,
+        pressure: weather[i].weatherPressure
+      });
+    }
 
-  // clear last one
-  if (myChart) {
-    myChart.destroy();
-  }
+    // clear last one
+    if (myChart) {
+      myChart.destroy();
+    }
 
-  myChart = new Chart(ctx, {
-    type: "line", // 'line', 'pie', 'doughnut', 'radar', etc.
-    data: {
-      datasets: [
-        {
-          label: "Weather Forecasts Every 3 Hours",
-          // data needs an array
-          data: processedInfo,
-          pointRadius: 10,
-          pointHoverRadius: 10,
-          pointBorderWidth: 1,
-          borderWidth: 3,
-          backgroundColor: "rgba(11, 55, 79, 1)",
-          borderColor: "rgba(11, 55, 79, 0.85)",
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-        },
+    myChart = new Chart(ctx, {
+      type: "line", // 'line', 'pie', 'doughnut', 'radar', etc.
+      data: {
+        datasets: [
+          {
+            label: "Weather Every 3 Hours",
+            // data needs an array
+            data: processedInfo,
+            pointRadius: 7,
+            pointHoverRadius: 9,
+            pointBorderWidth: 1,
+            borderWidth: 3,
+            backgroundColor: "rgba(214, 150, 23, 1)",
+            borderColor: "rgba(214, 150, 23, .85)",
+          },
+        ],
       },
-      animation: {
-        duration: 1000,
-        easing: 'easeOutQuart'
-      },
-      plugins: {
-        tooltip: {
-          enabled: true,
-          backgroundColor: 'rgba(0,0,0,0.75)',
-          titleColor: '#fff',
-          bodyColor: '#fff',
-          callbacks: {
-            title: function (context) {
-              return `${context[0].raw.y}°`;
-            },
-            label: function (context) {
-              const dataPoint = context.raw;
-              return `Temp: ${dataPoint.y}°, Humidity: ${dataPoint.humidity}%, Wind: ${dataPoint.wind} mph`;
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+        animation: {
+          duration: 1000,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          tooltip: {
+            enabled: true,
+            backgroundColor: 'rgba(0,0,0,0.75)',
+            titleColor: '#fff',
+            bodyColor: '#fff',
+            callbacks: {
+              title: function (context) {
+                return `${context[0].raw.y}°`;
+              },
+              label: function (context) {
+                const dataPoint = context.raw;
+                return `Temp: ${dataPoint.y}°, Humidity: ${dataPoint.humidity}%, Wind: ${dataPoint.wind} mph`;
+              }
             }
           }
         }
-      }
-    },
-  });
+      },
+    });
+  }
+
 };
 
 let cardGenerate = (iterations = 3) => {
@@ -145,18 +195,16 @@ let cardGenerate = (iterations = 3) => {
   infoContainer.innerHTML = '';
 
   if (!!weather) {
-    console.log('not empty');
-
+    // console.log('not empty');
 
     for (let i = 0; i < iterations; i++) {
 
       // console.log(weather[i]);
       // !weather
 
-
       const weatherCard = `
       <div class="s-weather-info__card">
-        <button class="s-weather-info__button">
+        <button class="s-weather-info__button" style="background-image: url('${weather[i].weatherBackground}');">
         <h2 class="s-weather-info__temp">
           <span>${weather[i].weatherTemp}&deg;</span>
           <img src="https://openweathermap.org/img/wn/${weather[i].weatherIcon}@2x.png" alt="icon" width="49px" height="49px"/>
@@ -177,12 +225,15 @@ let cardGenerate = (iterations = 3) => {
 
       infoContainer.innerHTML += weatherCard;
 
-      // click events here
     }
   }
 };
 
+
+// Generate cards and charts on initial load
 cardGenerate(iterations);
+chartGenerate(iterations);
+
 
 async function getData(location) {
   try {
@@ -206,7 +257,12 @@ async function getData(location) {
 
     // console.log(geoData[0]);
 
-    weatherTitleField.textContent = `Weather Forecast for ${geoName}, ${geoState}, ${geoCountry}`;
+
+    if (geoCountry != 'US') {
+      weatherTitleField.textContent = `Weather Forecast for ${geoName}, ${geoCountry}`;
+    } else {
+      weatherTitleField.textContent = `Weather Forecast for ${geoName}, ${geoState}, ${geoCountry}`;
+    }
 
     // weather section
     const weatherUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${geoLat}&lon=${geoLon}&appid=${apiKey}`;
@@ -245,6 +301,9 @@ async function getData(location) {
   }
 }
 
+
+
+// searchign weather handlers
 let searchWeather = () => {
   const inputValue = inputField.value.trim();
   if (!inputValue) return;
@@ -254,17 +313,12 @@ let searchWeather = () => {
   }
 };
 
-
-
 addBtn.addEventListener("click", searchWeather);
 inputField.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     searchWeather();
   }
 });
-
-
-
 
 // Accordions
 document.querySelector(".s-weather-info").addEventListener("click", (e) => {
