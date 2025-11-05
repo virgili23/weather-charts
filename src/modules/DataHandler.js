@@ -1,22 +1,15 @@
 let processedData = [];
 
-let processData = (fullWeatherData, fullGeoData) => {
+let processData = (fullWeatherData, timeZoneId) => {
     processedData = [];
     const weatherDataList = fullWeatherData.list;
 
-    console.log(fullGeoData);
-
-    const geoUrl = `http://api.geonames.org/timezoneJSON?lat=${fullGeoData.lat}&lng=${fullGeoData.lon}&username=demo`;
-
-
-    console.log(geoUrl);
-
-
-
+    // console.log(weatherDataList);
 
     weatherDataList.forEach(item => {
         const dt = item.dt;
         const localTime = new Date(dt * 1000);
+
 
         let toFarenheight = (temp) => {
             return Math.round(temp * (9 / 5) - 459.67);
@@ -30,12 +23,24 @@ let processData = (fullWeatherData, fullGeoData) => {
         const weatherStatus = item.weather[0].description;
         const weatherIcon = item.weather[0].icon;
 
-        const weatherTime = localTime.toLocaleString("en-US", {
-            weekday: "short",
-            hour: "2-digit",
+        // const weatherTime = localTime.toLocaleString("en-US", {
+        //     weekday: "short",
+        //     hour: "2-digit",
+        //     minute: "2-digit",
+        //     hour12: true,
+        // });
+
+        // console.log(`Local Time: ${weatherTime}`);
+
+        const weatherTime = new Intl.DateTimeFormat('en-US', {
+            weekday: "long",
+            hour: "numeric",
             minute: "2-digit",
             hour12: true,
-        });
+            timeZone: timeZoneId
+        }).format(localTime);
+
+        // console.log(`Converted Time: ${convertedTimeZone}`);
 
         const weatherPressure = ((item.main.pressure) * 0.02953).toFixed(2);
         const weatherWind = Math.round((item.wind.speed) * 2.237);

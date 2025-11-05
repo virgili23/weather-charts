@@ -74,7 +74,20 @@ async function getData(location) {
 
     const weatherData = await weatherRes.json();
 
-    processData(weatherData, geoData[0]);
+
+    // Timezone Convertion Section
+
+    const timeZoneUrl = `https://maps.googleapis.com/maps/api/timezone/json?location=${geoLat}%2C${geoLon}&timestamp=${weatherData.list[0].dt}&key=AIzaSyCVMlATFwwfIuSv9hd1Gw81tin1Y9MPOD4`;
+
+    const timeZoneRes = await fetch(timeZoneUrl);
+    if (!timeZoneRes.ok) {
+      throw new Error(`Response Status: ${timeZoneRes.status}`);
+    }
+    const timeZoneData = await timeZoneRes.json();
+    const timeZone = timeZoneData.timeZoneId;
+
+
+    processData(weatherData, timeZone);
     chartGenerate(iterations);
     cardGenerate(iterations);
 
