@@ -1,14 +1,13 @@
 let myChart;
 const ctx = document.getElementById("myChart");
 
-let chartGenerate = (iterations = 3) => {
-
-    let weather = JSON.parse(localStorage.getItem("weather"));
+let chartGenerate = (forecastCount = 3) => {
 
     let processedInfo = [];
+    let weather = JSON.parse(localStorage.getItem("weather"));
 
     if (!!weather) {
-        for (let i = 0; i < iterations; i++) {
+        for (let i = 0; i < forecastCount; i++) {
             processedInfo.push({
                 x: weather[i].weatherTime,
                 y: weather[i].weatherTemp,
@@ -17,12 +16,10 @@ let chartGenerate = (iterations = 3) => {
                 pressure: weather[i].weatherPressure
             });
         }
-
         // clear last one
         if (myChart) {
             myChart.destroy();
         }
-
         myChart = new Chart(ctx, {
             type: "line", // 'line', 'pie', 'doughnut', 'radar', etc.
             data: {

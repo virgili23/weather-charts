@@ -1,13 +1,13 @@
-let cardGenerate = (iterations = 3) => {
+let cardGenerate = (forecastCount = 3) => {
     const infoContainer = document.querySelector(".s-weather-info");
-    let weather = JSON.parse(localStorage.getItem("weather"));
+    const weather = JSON.parse(localStorage.getItem("weather"));
 
     if (!infoContainer) return;
     infoContainer.innerHTML = '';
 
     if (!!weather) {
 
-        for (let i = 0; i < iterations; i++) {
+        for (let i = 0; i < forecastCount; i++) {
             // console.log(weather[i]);
 
             const weatherCard = `
@@ -32,7 +32,6 @@ let cardGenerate = (iterations = 3) => {
             `;
 
             infoContainer.innerHTML += weatherCard;
-
         }
     }
 };

@@ -16,14 +16,14 @@ import { chartGenerate } from "./modules/Chart";
 import { processData } from "./modules/DataHandler";
 
 const apiKey = "c6401364e893ef48f3920bad850cadd0";
-const iterations = 8;
+const forecastCount = 8;
 const inputField = document.querySelector("#location-field");
 const addBtn = document.querySelector("#submit-button");
 
 // Initial load
 titleGenerate();
-cardGenerate(iterations);
-chartGenerate(iterations);
+cardGenerate(forecastCount);
+chartGenerate(forecastCount);
 
 // Fetch Info
 async function getData(location) {
@@ -60,8 +60,6 @@ async function getData(location) {
 
     localStorage.setItem("location", JSON.stringify(locationInfo));
 
-    titleGenerate();
-
 
     // Weather Section
     const weatherUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${geoLat}&lon=${geoLon}&appid=${apiKey}`;
@@ -87,9 +85,10 @@ async function getData(location) {
     const timeZone = timeZoneData.timeZoneId;
 
 
+    titleGenerate();
     processData(weatherData, timeZone);
-    chartGenerate(iterations);
-    cardGenerate(iterations);
+    chartGenerate(forecastCount);
+    cardGenerate(forecastCount);
 
   } catch (error) {
     console.log(`Error message`);
